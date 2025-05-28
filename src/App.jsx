@@ -9,14 +9,13 @@ function Square({ value, onSquareClick }) {
     </button>
   );
 }
-export default function Board() {
-  const [squares, setSquares] = useState(Array(9).fill(null));
-  const [xIsNext, setXIsNext] = useState(true);
-
+function Board({ xIsNext, squares, onPlay }) {
   const winner = calculateWinner(squares);
   let status;
 
-  if (winner) {
+  if (winner == "draw") {
+    status = "Its a draw";
+  } else if (winner) {
     status = `Winner: ${winner}`;
   } else {
     status = "Next Player: " + (xIsNext ? "X" : "O");
@@ -32,12 +31,13 @@ export default function Board() {
     } else {
       nextSquares[i] = "O";
     }
-    setSquares(nextSquares);
-    setXIsNext(!xIsNext);
+    onPlay(nextSquares);
   }
   return (
+    // <div className="flex items-center justify-center h-screen">
+    //   <div>
     <>
-      <div>{status}</div>
+      <div className="mx-6 my-2">{status}</div>
       <div className="flex">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -53,7 +53,39 @@ export default function Board() {
         <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
         <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
+
+      {/* <button
+        className="bg-blue-500 text-white rounded px-4 py-2 m-5"
+        onClick={() => {
+          setSquares(Array(9).fill(null));
+          setXIsNext(true);
+        }}
+      >
+        Start Again
+      </button> */}
     </>
+    /* </div>
+    </div> */
+  );
+}
+
+export default function Game() {
+  const [history, setHistory] = useState([Array(9).fill(null)]);
+  const [xIsNext, setXIsNext] = useState(true);
+
+  const currentSquares = history[history.length - 1];
+
+  function handlePlay(nextSquares) {
+    setXIsNext(!xIsNext);
+    setHistory([...history, nextSquares]);
+  }
+  return (
+    <div>
+      <div>
+        <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
+      </div>
+      <div>{/* TBD*/}</div>
+    </div>
   );
 }
 
@@ -75,5 +107,10 @@ function calculateWinner(squares) {
       return squares[a];
     }
   }
+  // Check for draw
+  if (squares.every((square) => square)) {
+    return "draw"; // Or return a special object { winner: null, draw: true }
+  }
+
   return null;
 }
