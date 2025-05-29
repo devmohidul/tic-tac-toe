@@ -37,7 +37,9 @@ function Board({ xIsNext, squares, onPlay }) {
     // <div className="flex items-center justify-center h-screen">
     //   <div>
     <>
-      <div className="mx-6 my-2">{status}</div>
+      <div className="flex justify-center text-center w-full">
+        <div className="bg-cyan-300 px-7 py-3 font-bold">{status}</div>
+      </div>
       <div className="flex">
         <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
@@ -96,17 +98,25 @@ export default function Game() {
       description = `Go to start the game`;
     }
     return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{description}</button>
+      <li key={move} className="w-full bg-gray-600 text-white mb-1 rounded-sm">
+        <button
+          onClick={() => jumpTo(move)}
+          style={{ cursor: "pointer" }}
+          className="p-2"
+        >
+          {description}
+        </button>
       </li>
     );
   });
   return (
-    <div>
-      <div>
+    <div className="flex justify-center p-4">
+      <div className="mr-16">
         <Board xIsNext={xIsNext} squares={currentSquares} onPlay={handlePlay} />
       </div>
-      <div>{moves}</div>
+      <div>
+        <ol className="border border-gray-400 p-3 text-lg">{moves}</ol>
+      </div>
     </div>
   );
 }
